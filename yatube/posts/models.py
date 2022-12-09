@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from constants import NUM_OF_SIMS
 
 User = get_user_model()
 
@@ -52,7 +53,7 @@ class Post(models.Model):
     )
 
     def __str__(self):
-        return self.text[:15]
+        return self.text[:NUM_OF_SIMS]
 
     class Meta:
         ordering = ('-pub_date',)
@@ -89,7 +90,7 @@ class Comment(models.Model):
         verbose_name = 'Коментарий'
 
     def __str__(self):
-        return self.text[:15]
+        return self.text[:NUM_OF_SIMS]
 
 
 class Follow(models.Model):
@@ -105,6 +106,11 @@ class Follow(models.Model):
         verbose_name='Автор')
 
     class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'author'], name='unique_author_user_following'
+            )
+        ]
         verbose_name_plural = 'Подписки'
         verbose_name = 'Подписка'
 
